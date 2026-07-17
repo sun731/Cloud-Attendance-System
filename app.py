@@ -1,16 +1,43 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request
+from models import db, Employee
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = SQLAlchemy(app)
-
+db.init_app(app)
 
 @app.route('/')
 def home():
-    return render_template("login.html")
+    return render_template("index.html")
+
+
+from flask import request
+
+@app.route('/employee/login', methods=['GET', 'POST'])
+def employee_login():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        employee = Employee.query.filter_by(email=email).first()
+
+        if employee and employee.password == password:
+            return render_template(
+                "employee/dashboard.html",
+                employee=employee
+            )
+
+        return "<h2>Invalid Email or Password</h2>"
+
+    return render_template("employee/login.html")
+
+
+@app.route('/admin/login')
+def admin_login():
+    return render_template("admin/login.html")
 
 
 @app.route('/test-db')
