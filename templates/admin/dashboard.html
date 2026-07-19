@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Admin Dashboard</title>
 </head>
+
 <body>
 
 <h1>Admin Dashboard</h1>
@@ -11,13 +13,31 @@
 
 <hr>
 
+<h2>Dashboard Statistics</h2>
+
+<table border="1" cellpadding="10">
+
+<tr>
+    <th>Total Employees</th>
+    <th>Checked In Today</th>
+    <th>Checked Out Today</th>
+</tr>
+
+<tr>
+    <td>{{ total_employees }}</td>
+    <td>{{ checked_in_today }}</td>
+    <td>{{ checked_out_today }}</td>
+</tr>
+
+</table>
+
+<hr>
+
 <h3>Employee Management</h3>
 
 <ul>
     <li><a href="/admin/add-employee">Add Employee</a></li>
     <li><a href="/admin/view-employees">View Employees</a></li>
-    <li>Edit Employee</li>
-    <li>Delete Employee</li>
 </ul>
 
 <hr>
@@ -25,13 +45,14 @@
 <h3>Attendance Management</h3>
 
 <ul>
-    <li>View Attendance</li>
-    <li>Generate Reports</li>
+    <li><a href="/admin/attendance">View Attendance</a></li>
 </ul>
-<br><br>
+
+<br>
 
 <a href="/admin/logout">
     <button>Logout</button>
 </a>
+
 </body>
 </html>

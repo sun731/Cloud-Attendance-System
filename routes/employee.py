@@ -7,6 +7,8 @@ employee_bp = Blueprint("employee", __name__)
 
 @employee_bp.route("/employee/login", methods=["GET", "POST"])
 def employee_login():
+    if "employee_id" in session:
+       return redirect(url_for("employee.employee_dashboard"))
 
     if request.method == "POST":
 
@@ -31,7 +33,7 @@ def employee_login():
 def employee_dashboard():
 
     if "employee_id" not in session:
-        return redirect(url_for("employee.employee_login"))
+        return redirect(url_for("home"))
 
     employee = Employee.query.get(session["employee_id"])
 
@@ -140,5 +142,5 @@ def employee_logout():
     session.pop("employee_id", None)
     session.pop("employee_name", None)
 
-    return redirect(url_for("employee.employee_login"))
 
+    return redirect(url_for("home"))

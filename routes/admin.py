@@ -1,11 +1,14 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
-from models import db, Employee, Admin
+from models import db, Admin, Employee, Attendance
+from datetime import date
 
 admin_bp = Blueprint("admin", __name__)
 
 
 @admin_bp.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
+    if "admin" in session:
+       return redirect(url_for("admin.admin_dashboard"))
 
     if request.method == "POST":
 
@@ -29,8 +32,25 @@ def admin_dashboard():
     if "admin" not in session:
         return redirect(url_for("admin.admin_login"))
 
-    return render_template("admin/dashboard.html")
+    today = date.today()
 
+    total_employees = Employee.query.count()
+
+    checked_in_today = Attendance.query.filter_by(
+        attendance_date=today
+    ).count()
+
+    checked_out_today = Attendance.query.filter(
+        Attendance.attendance_date == today,
+        Attendance.check_out != None
+    ).count()
+
+    return render_template(
+        "admin/dashboard.html",
+        total_employees=total_employees,
+        checked_in_today=checked_in_today,
+        checked_out_today=checked_out_today
+    )
 
 @admin_bp.route("/admin/add-employee", methods=["GET", "POST"])
 def add_employee():
@@ -70,19 +90,40 @@ def view_employees():
         employees=employees
     )
 
+@admin_bp.route("/admin/attendance")
+def view_attendance():
+
+    if "admin" not in session:
+        return redirect(url_for("admin.admin_login"))
+
+    records = (
+        db.session.query(Attendance, Employee)
+        .join(Employee, Attendance.employee_id == Employee.employee_id)
+        .order_by(
+            Attendance.attendance_date.desc(),
+            Employee.name
+        )
+        .all()
+    )
+
+    return render_template(
+        "admin/attendance.html",
+        records=records
+    )
+
 
 @admin_bp.route("/admin/logout")
 def admin_logout():
 
     session.pop("admin", None)
 
-    return redirect(url_for("admin.admin_login"))
+    return redirect(url_for("home"))
+
 @admin_bp.route("/admin/edit-employee/<int:employee_id>", methods=["GET", "POST"])
 def edit_employee(employee_id):
 
     if "admin" not in session:
-        return redirect(url_for("admin.admin_login"))
-
+        return redirect(url_for("home"))
     employee = Employee.query.get_or_404(employee_id)
 
     if request.method == "POST":

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Attendance Records</title>
+</head>
+
+<body>
+
+<h1>Attendance Records</h1>
+
+<hr>
+
+<table border="1" cellpadding="8">
+
+<tr>
+    <th>Employee</th>
+    <th>Department</th>
+    <th>Date</th>
+    <th>Check In</th>
+    <th>Check Out</th>
+    <th>Status</th>
+</tr>
+
+{% for attendance, employee in records %}
+
+<tr>
+
+<td>{{ employee.name }}</td>
+
+<td>{{ employee.department }}</td>
+
+<td>{{ attendance.attendance_date }}</td>
+
+<td>{{ attendance.check_in }}</td>
+
+<td>{{ attendance.check_out }}</td>
+
+<td>{{ attendance.attendance_status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br><br>
+
+<a href="/admin/dashboard">
+    <button>Back to Dashboard</button>
+</a>
+
+</body>
+</html>
