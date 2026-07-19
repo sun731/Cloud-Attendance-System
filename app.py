@@ -1,18 +1,21 @@
 from flask import Flask, render_template, request
-from models import db, Employee, Admin
 from config import Config
+from models import db, Employee
+from routes.admin import admin_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 db.init_app(app)
 
+# Register Admin Blueprint
+app.register_blueprint(admin_bp)
+
+
 @app.route('/')
 def home():
     return render_template("index.html")
 
-
-from flask import request
 
 @app.route('/employee/login', methods=['GET', 'POST'])
 def employee_login():
@@ -33,51 +36,6 @@ def employee_login():
         return "<h2>Invalid Email or Password</h2>"
 
     return render_template("employee/login.html")
-
-
-@app.route('/admin/login', methods=['GET', 'POST'])
-def admin_login():
-
-    if request.method == "POST":
-
-        username = request.form["username"]
-        password = request.form["password"]
-
-        admin = Admin.query.filter_by(username=username).first()
-
-        if admin and admin.password == password:
-            return render_template("admin/dashboard.html")
-
-        return "<h2>Invalid Admin Credentials</h2>"
-
-    return render_template("admin/login.html")
-
-@app.route('/admin/dashboard')
-def admin_dashboard():
-    return render_template("admin/dashboard.html")
-
-
-@app.route('/admin/add-employee', methods=['GET', 'POST'])
-def add_employee():
-
-    if request.method == "POST":
-
-        employee = Employee(
-            name=request.form["name"],
-            email=request.form["email"],
-            password=request.form["password"],
-            department=request.form["department"],
-            designation=request.form["designation"],
-            phone=request.form["phone"],
-            status=request.form["status"]
-        )
-
-        db.session.add(employee)
-        db.session.commit()
-
-        return "<h2>Employee Added Successfully!</h2><br><a href='/admin/dashboard'>Back to Dashboard</a>"
-
-    return render_template("admin/add_employee.html")
 
 
 @app.route('/test-db')
