@@ -78,6 +78,45 @@ def check_in():
     <a href="/employee/dashboard">Back to Dashboard</a>
     """
 
+@employee_bp.route("/employee/check-out")
+def check_out():
+
+    if "employee_id" not in session:
+        return redirect(url_for("employee.employee_login"))
+
+    employee_id = session["employee_id"]
+
+    today = date.today()
+
+    attendance = Attendance.query.filter_by(
+        employee_id=employee_id,
+        attendance_date=today
+    ).first()
+
+    if attendance is None:
+        return """
+        <h2>You have not checked in today.</h2>
+        <br>
+        <a href="/employee/dashboard">Back to Dashboard</a>
+        """
+
+    if attendance.check_out is not None:
+        return """
+        <h2>You have already checked out today.</h2>
+        <br>
+        <a href="/employee/dashboard">Back to Dashboard</a>
+        """
+
+    attendance.check_out = datetime.now().time()
+
+    db.session.commit()
+
+    return """
+    <h2>Check Out Successful!</h2>
+    <br>
+    <a href="/employee/dashboard">Back to Dashboard</a>
+    """
+
 
 @employee_bp.route("/employee/logout")
 def employee_logout():
