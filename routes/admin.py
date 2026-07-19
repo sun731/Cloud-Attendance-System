@@ -57,6 +57,19 @@ def add_employee():
 
     return render_template("admin/add_employee.html")
 
+@admin_bp.route("/admin/view-employees")
+def view_employees():
+
+    if "admin" not in session:
+        return redirect(url_for("admin.admin_login"))
+
+    employees = Employee.query.all()
+
+    return render_template(
+        "admin/view_employees.html",
+        employees=employees
+    )
+
 
 @admin_bp.route("/admin/logout")
 def admin_logout():
