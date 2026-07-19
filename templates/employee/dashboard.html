@@ -13,11 +13,29 @@
 
 <hr>
 
+<h3>Today's Attendance</h3>
+
+{% if today_attendance %}
+
+<p><b>Date:</b> {{ today_attendance.attendance_date }}</p>
+
+<p><b>Check In:</b> {{ today_attendance.check_in }}</p>
+
+<p><b>Check Out:</b> {{ today_attendance.check_out }}</p>
+
+<p><b>Status:</b> {{ today_attendance.attendance_status }}</p>
+
+{% else %}
+
+<p>No attendance record for today.</p>
+
+{% endif %}
+
+<hr>
+
 <a href="/employee/check-in">
     <button>Check In</button>
 </a>
-
-<br><br>
 
 <a href="/employee/check-out">
     <button>Check Out</button>
@@ -26,6 +44,37 @@
 <a href="/employee/logout">
     <button>Logout</button>
 </a>
+
+<hr>
+
+<h3>Attendance History</h3>
+
+<table border="1" cellpadding="8">
+
+<tr>
+    <th>Date</th>
+    <th>Check In</th>
+    <th>Check Out</th>
+    <th>Status</th>
+</tr>
+
+{% for record in attendance_history %}
+
+<tr>
+
+<td>{{ record.attendance_date }}</td>
+
+<td>{{ record.check_in }}</td>
+
+<td>{{ record.check_out }}</td>
+
+<td>{{ record.attendance_status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
 
 </body>
 </html>

@@ -35,10 +35,26 @@ def employee_dashboard():
 
     employee = Employee.query.get(session["employee_id"])
 
+    today = date.today()
+
+    today_attendance = Attendance.query.filter_by(
+        employee_id=employee.employee_id,
+        attendance_date=today
+    ).first()
+
+    attendance_history = Attendance.query.filter_by(
+        employee_id=employee.employee_id
+    ).order_by(
+        Attendance.attendance_date.desc()
+    ).all()
+
     return render_template(
         "employee/dashboard.html",
-        employee=employee
+        employee=employee,
+        today_attendance=today_attendance,
+        attendance_history=attendance_history
     )
+
 
 @employee_bp.route("/employee/check-in")
 def check_in():
