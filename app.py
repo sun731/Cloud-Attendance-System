@@ -1,41 +1,22 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from config import Config
-from models import db, Employee
+from models import db
 from routes.admin import admin_bp
+from routes.employee import employee_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 db.init_app(app)
 
-# Register Admin Blueprint
+# Register Blueprints
 app.register_blueprint(admin_bp)
+app.register_blueprint(employee_bp)
 
 
 @app.route('/')
 def home():
     return render_template("index.html")
-
-
-@app.route('/employee/login', methods=['GET', 'POST'])
-def employee_login():
-
-    if request.method == "POST":
-
-        email = request.form["email"]
-        password = request.form["password"]
-
-        employee = Employee.query.filter_by(email=email).first()
-
-        if employee and employee.password == password:
-            return render_template(
-                "employee/dashboard.html",
-                employee=employee
-            )
-
-        return "<h2>Invalid Email or Password</h2>"
-
-    return render_template("employee/login.html")
 
 
 @app.route('/test-db')
