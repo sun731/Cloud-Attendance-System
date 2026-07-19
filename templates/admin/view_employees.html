@@ -19,7 +19,7 @@
     <th>Designation</th>
     <th>Phone</th>
     <th>Status</th>
-    <th>Action</th>
+    <th>Actions</th>
 </tr>
 
 {% for employee in employees %}
@@ -41,10 +41,20 @@
 <td>{{ employee.status }}</td>
 
 <td>
-    <a href="/admin/edit-employee/{{ employee.employee_id }}">
-        Edit
-    </a>
+
+<a href="/admin/edit-employee/{{ employee.employee_id }}">
+    Edit
+</a>
+
+|
+
+<a href="/admin/delete-employee/{{ employee.employee_id }}"
+   onclick="return confirm('Delete this employee?');">
+    Delete
+</a>
+
 </td>
+
 
 </tr>
 

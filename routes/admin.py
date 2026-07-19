@@ -102,3 +102,15 @@ def edit_employee(employee_id):
         "admin/edit_employee.html",
         employee=employee
     )
+@admin_bp.route("/admin/delete-employee/<int:employee_id>")
+def delete_employee(employee_id):
+
+    if "admin" not in session:
+        return redirect(url_for("admin.admin_login"))
+
+    employee = Employee.query.get_or_404(employee_id)
+
+    db.session.delete(employee)
+    db.session.commit()
+
+    return redirect(url_for("admin.view_employees"))
