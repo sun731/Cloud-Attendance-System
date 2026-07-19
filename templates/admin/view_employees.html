@@ -19,6 +19,7 @@
     <th>Designation</th>
     <th>Phone</th>
     <th>Status</th>
+    <th>Action</th>
 </tr>
 
 {% for employee in employees %}
@@ -38,6 +39,12 @@
 <td>{{ employee.phone }}</td>
 
 <td>{{ employee.status }}</td>
+
+<td>
+    <a href="/admin/edit-employee/{{ employee.employee_id }}">
+        Edit
+    </a>
+</td>
 
 </tr>
 

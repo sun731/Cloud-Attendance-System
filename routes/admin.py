@@ -77,3 +77,28 @@ def admin_logout():
     session.pop("admin", None)
 
     return redirect(url_for("admin.admin_login"))
+@admin_bp.route("/admin/edit-employee/<int:employee_id>", methods=["GET", "POST"])
+def edit_employee(employee_id):
+
+    if "admin" not in session:
+        return redirect(url_for("admin.admin_login"))
+
+    employee = Employee.query.get_or_404(employee_id)
+
+    if request.method == "POST":
+
+        employee.name = request.form["name"]
+        employee.email = request.form["email"]
+        employee.department = request.form["department"]
+        employee.designation = request.form["designation"]
+        employee.phone = request.form["phone"]
+        employee.status = request.form["status"]
+
+        db.session.commit()
+
+        return redirect(url_for("admin.view_employees"))
+
+    return render_template(
+        "admin/edit_employee.html",
+        employee=employee
+    )

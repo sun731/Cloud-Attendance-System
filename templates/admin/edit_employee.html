@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Employee</title>
+</head>
+<body>
+
+<h1>Edit Employee</h1>
+
+<form method="POST">
+
+Name<br>
+<input type="text" name="name" value="{{ employee.name }}" required>
+<br><br>
+
+Email<br>
+<input type="email" name="email" value="{{ employee.email }}" required>
+<br><br>
+
+Department<br>
+<input type="text" name="department" value="{{ employee.department }}" required>
+<br><br>
+
+Designation<br>
+<input type="text" name="designation" value="{{ employee.designation }}" required>
+<br><br>
+
+Phone<br>
+<input type="text" name="phone" value="{{ employee.phone }}" required>
+<br><br>
+
+Status<br>
+<select name="status">
+
+<option value="Active"
+{% if employee.status == "Active" %}selected{% endif %}>
+Active
+</option>
+
+<option value="Inactive"
+{% if employee.status == "Inactive" %}selected{% endif %}>
+Inactive
+</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">
+Update Employee
+</button>
+
+</form>
+
+<br>
+
+<a href="/admin/view-employees">
+Back
+</a>
+
+</body>
+</html>
