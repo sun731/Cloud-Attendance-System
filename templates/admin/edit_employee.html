@@ -1,62 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Edit Employee</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
-<body>
 
-<h1>Edit Employee</h1>
+<body class="bg-light">
 
-<form method="POST">
+<nav class="navbar navbar-dark bg-primary">
 
-Name<br>
-<input type="text" name="name" value="{{ employee.name }}" required>
-<br><br>
+    <div class="container-fluid">
 
-Email<br>
-<input type="email" name="email" value="{{ employee.email }}" required>
-<br><br>
+        <span class="navbar-brand">
+            ☁️ Cloud Attendance System
+        </span>
 
-Department<br>
-<input type="text" name="department" value="{{ employee.department }}" required>
-<br><br>
+        <a href="/admin/view-employees" class="btn btn-light">
+            Back to Employees
+        </a>
 
-Designation<br>
-<input type="text" name="designation" value="{{ employee.designation }}" required>
-<br><br>
+    </div>
 
-Phone<br>
-<input type="text" name="phone" value="{{ employee.phone }}" required>
-<br><br>
+</nav>
 
-Status<br>
-<select name="status">
+<div class="container mt-4">
 
-<option value="Active"
-{% if employee.status == "Active" %}selected{% endif %}>
-Active
-</option>
+    <div class="row justify-content-center">
 
-<option value="Inactive"
-{% if employee.status == "Inactive" %}selected{% endif %}>
-Inactive
-</option>
+        <div class="col-md-8">
 
-</select>
+            <div class="card shadow">
 
-<br><br>
+                <div class="card-header bg-warning">
 
-<button type="submit">
-Update Employee
-</button>
+                    <h3>Edit Employee</h3>
 
-</form>
+                </div>
 
-<br>
+                <div class="card-body">
 
-<a href="/admin/view-employees">
-Back
-</a>
+                    <form method="POST">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">Name</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="name"
+                                value="{{ employee.name }}"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">Email</label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                name="email"
+                                value="{{ employee.email }}"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">Password</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="password"
+                                value="{{ employee.password }}"
+                                required>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">Department</label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="department"
+                                        value="{{ employee.department }}"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">Designation</label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="designation"
+                                        value="{{ employee.designation }}"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">Phone</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="phone"
+                                value="{{ employee.phone }}"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">Status</label>
+
+                            <select
+                                class="form-select"
+                                name="status">
+
+                                <option value="Active"
+                                    {% if employee.status=="Active" %}selected{% endif %}>
+                                    Active
+                                </option>
+
+                                <option value="Inactive"
+                                    {% if employee.status=="Inactive" %}selected{% endif %}>
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="d-grid">
+
+                            <button
+                                class="btn btn-warning">
+
+                                Update Employee
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
+
 </html>

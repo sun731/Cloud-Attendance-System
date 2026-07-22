@@ -20,6 +20,7 @@ class Employee(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    image_url = db.Column(db.String(500))
     department = db.Column(db.String(100))
     designation = db.Column(db.String(100))
     phone = db.Column(db.String(20))

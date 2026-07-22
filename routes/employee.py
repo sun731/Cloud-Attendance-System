@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
 from models import Employee, Attendance, db
 from datetime import date, datetime
-
+from werkzeug.security import check_password_hash
 employee_bp = Blueprint("employee", __name__)
 
 
@@ -17,7 +17,8 @@ def employee_login():
 
         employee = Employee.query.filter_by(email=email).first()
 
-        if employee and employee.password == password:
+
+        if employee and check_password_hash(employee.password, password):
 
             session["employee_id"] = employee.employee_id
             session["employee_name"] = employee.name
