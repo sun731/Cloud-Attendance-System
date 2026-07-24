@@ -348,9 +348,180 @@ def export_attendance():
     )
 
 
+@admin_bp.route("/admin/export-monthly-report")
+def export_monthly_report():
+
+    if "admin" not in session:
+        return redirect(url_for("admin.admin_login"))
+
+    from sqlalchemy import extract
+
+    month = request.args.get("month", type=int)
+    year = request.args.get("year", type=int)
+
+    output = StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "Employee ID",
+        "Employee Name",
+        "Department",
+        "Present Days",
+        "Attendance Percentage"
+    ])
+
+    import calendar
+
+    working_days = calendar.monthrange(year, month)[1]
+
+    employees = Employee.query.order_by(Employee.name).all()
+
+    for employee in employees:
+
+        present_days = Attendance.query.filter(
+            Attendance.employee_id == employee.employee_id,
+            extract("month", Attendance.attendance_date) == month,
+            extract("year", Attendance.attendance_date) == year
+        ).count()
+
+        percentage = round(
+            (present_days / working_days) * 100,
+            2
+        ) if working_days else 0
+
+        writer.writerow([
+            employee.employee_id,
+            employee.name,
+            employee.department,
+            present_days,
+            f"{percentage}%"
+        ])
+
+    return Response(
+
+        output.getvalue(),
+
+        mimetype="text/csv",
+
+        headers={
+
+            "Content-Disposition":
+            f"attachment; filename=attendance_{month}_{year}.csv"
+
+        }
+
+    )
+
 @admin_bp.route("/admin/logout")
 def admin_logout():
 
     session.pop("admin", None)
     flash("Logged out successfully!", "success")
     return redirect(url_for("home"))
+
+
+@admin_bp.route("/admin/monthly-report", methods=["GET"])
+def monthly_report():
+
+    if "admin" not in session:
+        return redirect(url_for("admin.admin_login"))
+
+    from sqlalchemy import extract
+    import calendar
+
+    month = request.args.get("month", type=int)
+    year = request.args.get("year", type=int)
+
+    report = []
+
+    total_employees = Employee.query.count()
+
+    total_records = 0
+    working_days = 0
+    average_attendance = 0
+    best_employee = None
+    best_percentage = 0
+
+    if month and year:
+
+        working_days = calendar.monthrange(year, month)[1]
+
+        employees = Employee.query.order_by(Employee.name).all()
+
+        total_percentage = 0
+
+        for employee in employees:
+
+            present_days = Attendance.query.filter(
+                Attendance.employee_id == employee.employee_id,
+                extract("month", Attendance.attendance_date) == month,
+                extract("year", Attendance.attendance_date) == year
+            ).count()
+
+            percentage = round(
+                (present_days / working_days) * 100,
+                2
+            ) if working_days else 0
+
+            if percentage >= 90:
+                status = "Excellent"
+
+            elif percentage >= 75:
+                status = "Good"
+
+            elif percentage >= 60:
+                status = "Average"
+
+            else:
+                status = "Poor"
+
+            report.append({
+
+                "employee": employee,
+
+                "present_days": present_days,
+
+                "percentage": percentage,
+
+                "status": status
+
+            })
+
+            total_records += present_days
+            total_percentage += percentage
+
+            if percentage > best_percentage:
+
+                best_percentage = percentage
+                best_employee = employee.name
+
+        if total_employees > 0:
+
+            average_attendance = round(
+                total_percentage / total_employees,
+                2
+            )
+
+    return render_template(
+
+        "admin/monthly_report.html",
+
+        report=report,
+
+        month=month,
+
+        year=year,
+
+        total_employees=total_employees,
+
+        total_records=total_records,
+
+        working_days=working_days,
+
+        average_attendance=average_attendance,
+
+        best_employee=best_employee,
+
+        best_percentage=best_percentage
+
+    )
