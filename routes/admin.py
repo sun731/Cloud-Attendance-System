@@ -355,9 +355,14 @@ def export_monthly_report():
         return redirect(url_for("admin.admin_login"))
 
     from sqlalchemy import extract
+    import calendar
 
     month = request.args.get("month", type=int)
     year = request.args.get("year", type=int)
+
+    if not month or not year:
+        flash("Please select a month and year.", "danger")
+        return redirect(url_for("admin.monthly_report"))
 
     output = StringIO()
     writer = csv.writer(output)
@@ -369,8 +374,6 @@ def export_monthly_report():
         "Present Days",
         "Attendance Percentage"
     ])
-
-    import calendar
 
     working_days = calendar.monthrange(year, month)[1]
 
@@ -397,20 +400,35 @@ def export_monthly_report():
             f"{percentage}%"
         ])
 
+    # Upload CSV to Amazon S3
+    try:
+
+        s3 = boto3.client("s3")
+
+        filename = f"attendance-reports/attendance_{month}_{year}.csv"
+
+        s3.put_object(
+            Bucket=BUCKET_NAME,
+            Key=filename,
+            Body=output.getvalue(),
+            ContentType="text/csv"
+        )
+
+        print("Monthly report uploaded to S3.")
+
+    except ClientError as e:
+
+        print(f"S3 Upload Failed: {e}")
+
     return Response(
-
         output.getvalue(),
-
         mimetype="text/csv",
-
         headers={
-
             "Content-Disposition":
             f"attachment; filename=attendance_{month}_{year}.csv"
-
         }
+    )  
 
-    )
 
 @admin_bp.route("/admin/logout")
 def admin_logout():
