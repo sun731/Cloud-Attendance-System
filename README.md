@@ -11,6 +11,9 @@ The Cloud Attendance System is a web application that simplifies employee attend
 The application is deployed on Amazon EC2 and uses Amazon RDS for database management, Amazon S3 for image and report storage, and Amazon CloudWatch for monitoring.
 
 ---
+## Cloud Architecture Diagram
+
+![Cloud Architecture](diagrams/architecture.png)
 
 # Features
 
